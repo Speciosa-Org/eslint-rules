@@ -19,13 +19,17 @@ jobs:
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
           node-version: 20.x
-          registry-url: 'https://npm.pkg.github.com'
+          registry-url: 'https://registry.npmjs.org'
           scope: '@speciosa'
       - name: Install Dependencies
         run: npm ci
       - name: Set version
         run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
-      - name: Publish
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Package
+        run: npm pack
+      - name: Store Artifact
+        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
+        with:
+          name: package-${{ github.event.inputs.version }}
+          retention-days: 1
+          path: '*.tgz'

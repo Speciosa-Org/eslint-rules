@@ -1,0 +1,31 @@
+{
+  "name": "@speciosa/eslint-plugin",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Various eslint rules for various aspects of code",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "ava tests/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Speciosa-Org/eslint-rules.git"
+  },
+  "keywords": [
+    "eslint"
+  ],
+  "author": "Jonathan Garbee <jonathan@garbee.me>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Speciosa-Org/eslint-rules/issues"
+  },
+  "homepage": "https://github.com/Speciosa-Org/eslint-rules#readme",
+  "peerDependencies": {
+    "eslint": "^8.0.0"
+  },
+  "devDependencies": {
+    "ava": "^5.3.1",
+    "eslint-plugin-eslint-plugin": "^5.1.1"
+  }
+}

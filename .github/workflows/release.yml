@@ -6,7 +6,10 @@ on:
       - published
 
 jobs:
+  test:
+    uses: ./.github/workflows/unit-test.yml
   get-version:
+    needs: test
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get_version.outputs.VERSION }}
@@ -24,6 +27,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
     uses: ./.github/workflows/publish.yml
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     with:
       version: ${{ needs.get-version.outputs.version }}

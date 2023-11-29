@@ -2,6 +2,9 @@ name: Publish
 
 on:
   workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
     inputs:
       version:
         required: true
@@ -33,6 +36,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
     env:
       VERSION: ${{ needs.get-version.outputs.version }}
     steps:
@@ -47,11 +51,7 @@ jobs:
         run: npm ci
       - name: Set version
         run: npm version ${{ env.VERSION }} --no-git-tag-version
-      - name: Package
-        run: npm pack
-      - name: Store Artifact
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
-        with:
-          name: package-${{ env.VERSION }}
-          retention-days: 1
-          path: '*.tgz'
+      - name: Publish
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

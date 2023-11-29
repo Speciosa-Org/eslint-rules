@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Speciosa-Org/eslint-rules#readme",
   "peerDependencies": {
-    "eslint": "^8.0.0"
+    "eslint": "^7.0.0 || ^8.0.0"
   },
   "devDependencies": {
     "ava": "^5.3.1",

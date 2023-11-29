@@ -19,6 +19,9 @@ jobs:
           - '16.x'
           - '18.x'
           - '20.x'
+        eslint-version:
+          - '7'
+          - '8'
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Use Node.js ${{ matrix.node-version }}
@@ -28,7 +31,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Install ESlint
-        if: matrix.node-version == '14.x'
-        run: npm install eslint@^8.0.0
+        run: npm install eslint@${{ matrix.eslint-version }}
       - name: Run Tests
         run: npm run test

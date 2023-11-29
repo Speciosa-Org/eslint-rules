@@ -1,6 +1,12 @@
 name: Publish
 
 on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: The version to deploy to Github Packages
   workflow_dispatch:
     inputs:
       version:
@@ -8,11 +14,27 @@ on:
         required: true
 
 jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+      - name: Get version
+        id: get_version
+        run: |
+          if [[ -n "${{ github.event.inputs.version }}" ]]; then
+            echo VERSION=${{ github.event.inputs.version }} >> $GITHUB_OUTPUT
+          else
+            echo VERSION=${{ inputs.version }} >> $GITHUB_OUTPUT
+          fi
   publish:
     runs-on: ubuntu-latest
+    needs: get-version
     permissions:
       contents: read
       packages: write
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Use Node.js
@@ -24,12 +46,12 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Set version
-        run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
+        run: npm version ${{ env.VERSION }} --no-git-tag-version
       - name: Package
         run: npm pack
       - name: Store Artifact
         uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
         with:
-          name: package-${{ github.event.inputs.version }}
+          name: package-${{ env.VERSION }}
           retention-days: 1
           path: '*.tgz'

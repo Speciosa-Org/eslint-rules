@@ -1,0 +1,29 @@
+name: Release Package
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.VERSION }}
+    env:
+      VERSION: ${{ github.event.release.tag_name }}
+    steps:
+      - name: Remove 'release/' from version
+        id: get_version
+        run: |
+          value=${VERSION/release\//}
+          echo "$value"
+          echo "VERSION=$value" >> $GITHUB_OUTPUT
+  call-publish:
+    needs: get-version
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/publish.yml
+    with:
+      version: ${{ needs.get-version.outputs.version }}
